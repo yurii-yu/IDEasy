@@ -85,15 +85,10 @@ public record IdeLogEntry(IdeLogLevel level, String message, String rawMessage, 
     if (this.level != entry.level) {
       return false;
     } else if (this.contains) {
-      if (!entry.message.contains(this.message)) {
-        return false;
-      }
+        return entry.message.contains(this.message);
     } else {
-      if (this.message != null && !entry.message.equals(this.message)) {
-        return false;
-      }
+      return this.message == null || entry.message.equals(this.message);
     }
-    return true;
   }
 
   /**
