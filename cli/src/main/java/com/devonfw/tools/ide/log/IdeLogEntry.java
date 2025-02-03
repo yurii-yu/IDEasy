@@ -10,8 +10,10 @@ package com.devonfw.tools.ide.log;
  * @param error the {@link IdeSubLogger#log(Throwable, String) optional error that was logged}.
  * @param contains - {@code true} if the {@link IdeLogEntry} to create is used as sub-string pattern for {@link #matches(IdeLogEntry) matching},
  *     {@code false} otherwise.
+ * @param useRegexMatch - {@code true} if the {@link IdeLogEntry} to create is used as a regex pattern for {@link #matches(IdeLogEntry) matching},
+ *  *     {@code false} otherwise.
  */
-public record IdeLogEntry(IdeLogLevel level, String message, String rawMessage, Object[] args, Throwable error, boolean contains) {
+public record IdeLogEntry(IdeLogLevel level, String message, String rawMessage, Object[] args, Throwable error, boolean contains, boolean useRegexMatch) {
 
   /**
    * The constructor.
@@ -31,10 +33,14 @@ public record IdeLogEntry(IdeLogLevel level, String message, String rawMessage, 
     }
   }
 
-  /**
-   * @param level the {@link IdeLogLevel}.
-   * @param message the {@link IdeSubLogger#log(String) logged message}.
-   */
+  public IdeLogEntry(IdeLogLevel level, String message, String rawMessage, Object[] args, Throwable error, boolean contains) {
+    this(level, message, rawMessage, args, error, contains, false);
+  }
+
+      /**
+       * @param level the {@link IdeLogLevel}.
+       * @param message the {@link IdeSubLogger#log(String) logged message}.
+       */
   public IdeLogEntry(IdeLogLevel level, String message) {
 
     this(level, message, null, null, null, false);
@@ -84,6 +90,8 @@ public record IdeLogEntry(IdeLogLevel level, String message, String rawMessage, 
 
     if (this.level != entry.level) {
       return false;
+    } else if (this.useRegexMatch) {
+      return entry.message.matches(this.message);
     } else if (this.contains) {
         return entry.message.contains(this.message);
     } else {
