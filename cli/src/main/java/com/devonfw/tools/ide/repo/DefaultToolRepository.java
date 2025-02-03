@@ -64,7 +64,7 @@ public class DefaultToolRepository extends AbstractToolRepository {
       dependencies = urlTool.getDependencyFile().getDependencies();
     }
     if (dependencies != ToolDependencies.getEmpty()) {
-      this.context.trace("Found dependencies in {}", dependencies);
+      this.context.trace("Detected pre-defined dependencies in {}", dependencies);
     }
     return dependencies.findDependencies(version, this.context);
   }

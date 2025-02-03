@@ -2,6 +2,8 @@ package com.devonfw.tools.ide.commandlet;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.devonfw.tools.ide.log.IdeLogLevel;
+
 import org.junit.jupiter.api.Test;
 
 import com.devonfw.tools.ide.cli.CliException;
@@ -28,7 +30,10 @@ public class BuildCommandletTest extends AbstractIdeContextTest {
     BuildCommandlet buildCommandlet = context.getCommandletManager().getCommandlet(BuildCommandlet.class);
     context.setCwd(context.getWorkspacePath().resolve("mvn"), context.getWorkspacePath().toString(), context.getIdeHome());
     buildCommandlet.run();
-    assertThat(context).log().hasEntries(IdeLogEntry.ofDebug("Tool mvn has 1 other tool(s) as dependency"),
+    boolean enableTextContains = true;
+    assertThat(context).log().hasEntries(
+        new IdeLogEntry(IdeLogLevel.TRACE, "Detected pre-defined dependencies in", enableTextContains),
+        IdeLogEntry.ofDebug("Tool mvn has 1 other tool(s) as dependency"),
         IdeLogEntry.ofSuccess("Successfully installed java in version 17.0.10_7"),
         IdeLogEntry.ofSuccess("Successfully installed mvn in version 3.9.6"),
         IdeLogEntry.ofInfo("mvn clean compile"));
