@@ -84,40 +84,40 @@ public class IdeTestLoggerAssertion {
   }
 
   /**
-   * @param expectedEntries the expected {@link com.devonfw.tools.ide.log.IdeLogEntry log entries} in order.
+   * @param orderedExpectedEntries the expected {@link com.devonfw.tools.ide.log.IdeLogEntry log entries} in order.
    * @return this assertion itself for fluent API calls.
    */
-  public IdeTestLoggerAssertion hasEntries(IdeLogEntry... expectedEntries) {
+  public IdeTestLoggerAssertion hasEntries(IdeLogEntry... orderedExpectedEntries) {
 
-    return hasEntries(false, expectedEntries);
+    return hasEntries(false, orderedExpectedEntries);
   }
 
   /**
-   * @param expectedEntries the expected {@link com.devonfw.tools.ide.log.IdeLogEntry log entries} to be logged in order without any other log statement in
+   * @param orderedExpectedEntries the expected {@link com.devonfw.tools.ide.log.IdeLogEntry log entries} to be logged in order without any other log statement in
    *     between them.
    * @return this assertion itself for fluent API calls.
    */
-  public IdeTestLoggerAssertion hasEntriesWithNothingElseInBetween(IdeLogEntry... expectedEntries) {
+  public IdeTestLoggerAssertion hasEntriesWithNothingElseInBetween(IdeLogEntry... orderedExpectedEntries) {
 
-    return hasEntries(true, expectedEntries);
+    return hasEntries(true, orderedExpectedEntries);
   }
 
-  private IdeTestLoggerAssertion hasEntries(boolean nothingElseInBetween, IdeLogEntry... expectedEntries) {
+  private IdeTestLoggerAssertion hasEntries(boolean nothingElseInBetween, IdeLogEntry... orderedExpectedEntries) {
 
-    assert (expectedEntries.length > 0);
+    assert (orderedExpectedEntries.length > 0);
     int i = 0;
     int max = 0;
     for (IdeLogEntry entry : this.entries) {
-      if (expectedEntries[i].matches(entry)) {
+      if (orderedExpectedEntries[i].matches(entry)) {
         i++;
       } else {
         if (nothingElseInBetween) {
           i = 0;
-        } else if (expectedEntries[0].matches(entry)) {
+        } else if (orderedExpectedEntries[0].matches(entry)) {
           i = 1;
         }
       }
-      if (i == expectedEntries.length) {
+      if (i == orderedExpectedEntries.length) {
         return this;
       }
       if (i > max) {
@@ -128,17 +128,17 @@ public class IdeTestLoggerAssertion {
     if (max > 0) {
       error.append("Found expected log entries:\n");
       for (i = 0; i < max; i++) {
-        appendEntry(error, expectedEntries[i]);
+        appendEntry(error, orderedExpectedEntries[i]);
       }
     }
     error.append("\nThe first entry that was not matching from a block of ");
-    error.append(expectedEntries.length);
+    error.append(orderedExpectedEntries.length);
     error.append(" expected log-entries ");
     if (nothingElseInBetween) {
       error.append("with nothing else logged in between ");
     }
     error.append("was:\n");
-    appendEntry(error, expectedEntries[max]);
+    appendEntry(error, orderedExpectedEntries[max]);
     error.append("\nIn the logs of this test:\n");
     for (IdeLogEntry entry : this.entries) {
       appendEntry(error, entry);
